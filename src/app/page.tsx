@@ -4,36 +4,36 @@ import { useState, useEffect, useMemo } from 'react';
 
 // 향수 정보 데이터 (사용자 제공)
 const scents = [
-  { id: 'AC01', name: "AC'SCENT 01", notes: "블랙베리 + 월계수잎 + 시더우드" },
-  { id: 'AC02', name: "AC'SCENT 02", notes: "만다린 오렌지 + 그레이프프루트 + 피오니" },
-  { id: 'AC03', name: "AC'SCENT 03", notes: "스트로베리 + 자스민 + 바닐라" },
-  { id: 'AC04', name: "AC'SCENT 04", notes: "베르가못 + 오렌지 플라워 + 엠버" },
-  { id: 'AC05', name: "AC'SCENT 05", notes: "비터 오렌지 + 쥬니퍼베리 + 스파이시 우디 어코드" },
-  { id: 'AC06', name: "AC'SCENT 06", notes: "캐럿 + 자몽 + 로터스" },
-  { id: 'AC07', name: "AC'SCENT 07", notes: "로즈 + 다마스커스 로즈 + 머스크" },
-  { id: 'AC08', name: "AC'SCENT 08", notes: "튜베로즈 + 화이트 플로럴 + 프리지아" },
-  { id: 'AC09', name: "AC'SCENT 09", notes: "오렌지 블라썸 + 자스민 + 퉁카 빈" },
-  { id: 'AC10', name: "AC'SCENT 10", notes: "튤립 + 시클라멘 + 라일락" },
-  { id: 'AC11', name: "AC'SCENT 11", notes: "라임 + 바질 + 앰버우드" },
-  { id: 'AC12', name: "AC'SCENT 12", notes: "은방울꽃 + 핑크 프리지아 + 자스민" },
-  { id: 'AC13', name: "AC'SCENT 13", notes: "유자 + 로즈마리 + 민트" },
-  { id: 'AC14', name: "AC'SCENT 14", notes: "민트 + 자스민 + 마테 잎" },
-  { id: 'AC15', name: "AC'SCENT 15", notes: "페티그레인 + 비터오렌지 + 자몽" },
-  { id: 'AC16', name: "AC'SCENT 16", notes: "샌달우드 + 암브록산 + 파피루스" },
-  { id: 'AC17', name: "AC'SCENT 17", notes: "레몬페퍼 + 인센스 + 오리스" },
-  { id: 'AC18', name: "AC'SCENT 18", notes: "핑크페퍼 + 넛맥 + 민트" },
-  { id: 'AC19', name: "AC'SCENT 19", notes: "바다소금 + 세이지 + 자몽" },
-  { id: 'AC20', name: "AC'SCENT 20", notes: "타임 + 제라늄 + 엘레미" },
-  { id: 'AC21', name: "AC'SCENT 21", notes: "머스크 + 아프리카 오렌지꽃 + 튜베로즈" },
-  { id: 'AC22', name: "AC'SCENT 22", notes: "화이트로즈 + 핑크페퍼 + 머스크" },
-  { id: 'AC23', name: "AC'SCENT 23", notes: "스웨이드 + 은방울꽃 + 머스크" },
-  { id: 'AC24', name: "AC'SCENT 24", notes: "이탈리안만다린 + 암브레트 + 머스크" },
-  { id: 'AC25', name: "AC'SCENT 25", notes: "라벤더 + 시나몬 + 과이악우드" },
-  { id: 'AC26', name: "AC'SCENT 26", notes: "이탈리안사이프러스 + 시더우드 + 스파이시 어코드" },
-  { id: 'AC27', name: "AC'SCENT 27", notes: "스모키 블렌드 우드 + 로즈우드 + 카다멈" },
-  { id: 'AC28', name: "AC'SCENT 28", notes: "레더 + 통카빈 + 세이지" },
-  { id: 'AC29', name: "AC'SCENT 29", notes: "바이올렛 + 네스베리 + 프랑스머스크" },
-  { id: 'AC30', name: "AC'SCENT 30", notes: "베르가못 + 무화과 + 월계수잎" },
+  { id: 'AC01', name: "AC&apos;SCENT 01", notes: "블랙베리 + 월계수잎 + 시더우드" },
+  { id: 'AC02', name: "AC&apos;SCENT 02", notes: "만다린 오렌지 + 그레이프프루트 + 피오니" },
+  { id: 'AC03', name: "AC&apos;SCENT 03", notes: "스트로베리 + 자스민 + 바닐라" },
+  { id: 'AC04', name: "AC&apos;SCENT 04", notes: "베르가못 + 오렌지 플라워 + 엠버" },
+  { id: 'AC05', name: "AC&apos;SCENT 05", notes: "비터 오렌지 + 쥬니퍼베리 + 스파이시 우디 어코드" },
+  { id: 'AC06', name: "AC&apos;SCENT 06", notes: "캐럿 + 자몽 + 로터스" },
+  { id: 'AC07', name: "AC&apos;SCENT 07", notes: "로즈 + 다마스커스 로즈 + 머스크" },
+  { id: 'AC08', name: "AC&apos;SCENT 08", notes: "튜베로즈 + 화이트 플로럴 + 프리지아" },
+  { id: 'AC09', name: "AC&apos;SCENT 09", notes: "오렌지 블라썸 + 자스민 + 퉁카 빈" },
+  { id: 'AC10', name: "AC&apos;SCENT 10", notes: "튤립 + 시클라멘 + 라일락" },
+  { id: 'AC11', name: "AC&apos;SCENT 11", notes: "라임 + 바질 + 앰버우드" },
+  { id: 'AC12', name: "AC&apos;SCENT 12", notes: "은방울꽃 + 핑크 프리지아 + 자스민" },
+  { id: 'AC13', name: "AC&apos;SCENT 13", notes: "유자 + 로즈마리 + 민트" },
+  { id: 'AC14', name: "AC&apos;SCENT 14", notes: "민트 + 자스민 + 마테 잎" },
+  { id: 'AC15', name: "AC&apos;SCENT 15", notes: "페티그레인 + 비터오렌지 + 자몽" },
+  { id: 'AC16', name: "AC&apos;SCENT 16", notes: "샌달우드 + 암브록산 + 파피루스" },
+  { id: 'AC17', name: "AC&apos;SCENT 17", notes: "레몬페퍼 + 인센스 + 오리스" },
+  { id: 'AC18', name: "AC&apos;SCENT 18", notes: "핑크페퍼 + 넛맥 + 민트" },
+  { id: 'AC19', name: "AC&apos;SCENT 19", notes: "바다소금 + 세이지 + 자몽" },
+  { id: 'AC20', name: "AC&apos;SCENT 20", notes: "타임 + 제라늄 + 엘레미" },
+  { id: 'AC21', name: "AC&apos;SCENT 21", notes: "머스크 + 아프리카 오렌지꽃 + 튜베로즈" },
+  { id: 'AC22', name: "AC&apos;SCENT 22", notes: "화이트로즈 + 핑크페퍼 + 머스크" },
+  { id: 'AC23', name: "AC&apos;SCENT 23", notes: "스웨이드 + 은방울꽃 + 머스크" },
+  { id: 'AC24', name: "AC&apos;SCENT 24", notes: "이탈리안만다린 + 암브레트 + 머스크" },
+  { id: 'AC25', name: "AC&apos;SCENT 25", notes: "라벤더 + 시나몬 + 과이악우드" },
+  { id: 'AC26', name: "AC&apos;SCENT 26", notes: "이탈리안사이프러스 + 시더우드 + 스파이시 어코드" },
+  { id: 'AC27', name: "AC&apos;SCENT 27", notes: "스모키 블렌드 우드 + 로즈우드 + 카다멈" },
+  { id: 'AC28', name: "AC&apos;SCENT 28", notes: "레더 + 통카빈 + 세이지" },
+  { id: 'AC29', name: "AC&apos;SCENT 29", notes: "바이올렛 + 네스베리 + 프랑스머스크" },
+  { id: 'AC30', name: "AC&apos;SCENT 30", notes: "베르가못 + 무화과 + 월계수잎" },
 ];
 
 const PERFUME_PRICE = 38000;
@@ -278,7 +278,7 @@ export default function Home() {
       <div className="max-w-[375px] mx-auto px-3">
         {/* Header */}
         <header className="pt-10 pb-8 border-b border-black">
-          <h1 className="text-xl font-light uppercase tracking-widest text-center mb-2">AC'SCENT WOW ONLINE</h1>
+          <h1 className="text-xl font-light uppercase tracking-widest text-center mb-2">AC&apos;SCENT WOW ONLINE</h1>
           <p className="text-[11px] text-center uppercase tracking-wider">이벤트 온라인 주문 페이지</p>
         </header>
 
@@ -494,7 +494,7 @@ export default function Home() {
                     <div>
                       <h4 className="text-[13px] font-semibold text-purple-900">오프라인 방문</h4>
                       <p className="text-[11px] text-purple-700 leading-tight mt-1">
-                        AC'SCENT WOW에 방문하시면 다양한 향을 직접 맡아보실 수 있습니다.
+                        AC&apos;SCENT WOW에 방문하시면 다양한 향을 직접 맡아보실 수 있습니다.
                       </p>
                     </div>
                   </div>
