@@ -70,6 +70,55 @@ const ScentInfoModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => v
   );
 };
 
+// 주문 확인 모달 컴포넌트
+const OrderConfirmModal = ({ isOpen, onClose, orderDetails }: { 
+  isOpen: boolean, 
+  onClose: () => void,
+  orderDetails?: {
+    name: string;
+    totalAmount: number;
+  }
+}) => {
+  if (!isOpen || !orderDetails) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 z-50">
+      <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 relative">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl font-bold"
+          aria-label="Close modal"
+        >
+          &times;
+        </button>
+        <div className="text-center">
+          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </div>
+          <h2 className="text-xl font-semibold mb-2 text-gray-800">주문이 접수되었습니다!</h2>
+          <p className="text-gray-600 mb-4">{orderDetails.name}님, 주문해주셔서 감사합니다.</p>
+
+          <div className="bg-gray-50 p-4 rounded-md mb-4">
+            <p className="text-sm font-medium mb-2">입금 안내</p>
+            <p className="text-sm text-gray-600 mb-1">카카오뱅크 {KAKAO_BANK_ACCOUNT} (예금주: ㅇㅅㅎ)</p>
+            <p className="text-sm text-gray-600 mb-1">금액: {orderDetails.totalAmount.toLocaleString()}원</p>
+            <p className="text-sm text-red-500 font-medium">1시간 이내로 입금해주세요!</p>
+          </div>
+
+          <button 
+            onClick={onClose}
+            className="w-full py-2 bg-black text-white rounded hover:bg-gray-800 transition-colors text-sm"
+          >
+            확인
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function Home() {
   // 주문 정보 상태
   const [name, setName] = useState('');
@@ -89,6 +138,8 @@ export default function Home() {
   const [isError, setIsError] = useState(false);
   const [showAllScents, setShowAllScents] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isOrderConfirmModalOpen, setIsOrderConfirmModalOpen] = useState(false);
+  const [orderDetails, setOrderDetails] = useState<{ name: string; totalAmount: number } | undefined>(undefined);
 
   // 가격 계산 로직
   const subtotal = useMemo(() => {
@@ -150,7 +201,10 @@ export default function Home() {
       const data = await response.json();
 
       if (response.ok) {
-        handleSuccess(data.message || '주문이 성공적으로 접수되었습니다.');
+        handleSuccess(data.message || '주문이 성공적으로 접수되었습니다. 1시간 이내로 입금 확인이 안 될 경우 주문 접수가 자동 취소됩니다.');
+        // 주문 성공 시 모달 표시
+        setOrderDetails({ name, totalAmount });
+        setIsOrderConfirmModalOpen(true);
         resetForm();
       } else {
         handleError(data.error || '주문 처리 중 오류가 발생했습니다.');
@@ -224,8 +278,8 @@ export default function Home() {
       <div className="max-w-[375px] mx-auto px-3">
         {/* Header */}
         <header className="pt-10 pb-8 border-b border-black">
-          <h1 className="text-xl font-light uppercase tracking-widest text-center mb-2">FRAGRANCE COLLECTION</h1>
-          <p className="text-[11px] text-center uppercase tracking-wider">아이돌 이벤트 온라인 주문</p>
+          <h1 className="text-xl font-light uppercase tracking-widest text-center mb-2">AC'SCENT WOW ONLINE</h1>
+          <p className="text-[11px] text-center uppercase tracking-wider">이벤트 온라인 주문 페이지</p>
         </header>
 
         {/* Main Content */}
@@ -238,18 +292,22 @@ export default function Home() {
               <li>향수 38,000원 / 샤쉐(방향제) 15,000원</li>
               <li>배송비: 3,500원 (5만원 이상 무료배송)</li>
               <li>결제 방법: 계좌 이체</li>
-              <li className="pt-2">
-                <a 
-                  href="YOUR_AI_PERFUME_ANALYSIS_LINK_HERE" 
-                  className="inline-flex items-center text-[10px] underline"
-                >
-                  <span>AI 최애 향수 분석 바로가기</span>
-                  <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                </a>
-              </li>
+              <li>주문 접수 후 1시간 이내로 입금 확인이 안 될 경우 주문이 취소됩니다.</li>
             </ul>
+            
+            <div className="mt-4 mb-2">
+              <a 
+                href="https://www.acscent-universe.co.kr" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full bg-black text-white py-3 px-4 text-center rounded-md shadow-sm hover:bg-gray-800 transition-colors"
+              >
+                <span className="text-[14px] font-medium uppercase tracking-wider">AI 최애 향수 분석 바로가기</span>
+                <svg className="w-4 h-4 ml-1 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+            </div>
           </section>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -376,7 +434,9 @@ export default function Home() {
                     
                     <div className="mt-2">
                       <a 
-                        href="YOUR_AI_PERFUME_ANALYSIS_LINK_HERE" 
+                        href="https://www.acscent-universe.co.kr" 
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="text-[10px] underline flex items-center"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -405,6 +465,52 @@ export default function Home() {
                 {sachetQuantity > 0 && (
                   <p className="text-[9px] text-gray-500 mt-1">향 선택 불가 상품입니다.</p>
                 )}
+              </div>
+              
+              {/* AI 추천 및 오프라인 방문 안내 */}
+              <div className="mt-6 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg border border-indigo-100 shadow-sm overflow-hidden">
+                <div className="p-4 space-y-4">
+                  <div className="flex items-start">
+                    <div className="flex-shrink-0 bg-indigo-100 rounded-full p-2 mr-3">
+                      <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="text-[13px] font-semibold text-indigo-900">AI로 향 추천받기</h4>
+                      <p className="text-[11px] text-indigo-700 leading-tight mt-1">
+                        AI를 통해 최애의 이미지를 분석하고, 나에게 맞는 향을 추천받아보세요!
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start">
+                    <div className="flex-shrink-0 bg-purple-100 rounded-full p-2 mr-3">
+                      <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="text-[13px] font-semibold text-purple-900">오프라인 방문</h4>
+                      <p className="text-[11px] text-purple-700 leading-tight mt-1">
+                        AC'SCENT WOW에 방문하시면 다양한 향을 직접 맡아보실 수 있습니다.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <a 
+                    href="https://www.acscent-universe.co.kr" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-2 px-4 text-center rounded-md shadow-sm hover:from-indigo-700 hover:to-purple-700 transition-all text-[12px] font-medium mt-3"
+                  >
+                    나에게 맞는 향 찾으러 가기
+                    <svg className="w-3.5 h-3.5 ml-1 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                    </svg>
+                  </a>
+                </div>
               </div>
             </section>
 
@@ -451,7 +557,7 @@ export default function Home() {
                   </span>
                   <button
                     type="button"
-                    onClick={() => copyToClipboard(KAKAO_BANK_ACCOUNT)}
+                    onClick={() => copyToClipboard(`카카오뱅크 ${KAKAO_BANK_ACCOUNT}`)}
                     className="text-[10px] underline"
                   >
                     복사
@@ -459,6 +565,12 @@ export default function Home() {
                 </div>
                 <p className="text-[9px] text-gray-500">
                   * 입금자명은 주문자 성함과 동일하게 입력해주세요.
+                </p>
+                <p className="text-[9px] text-gray-500">
+                  * 예금주: ㅇㅅㅎ
+                </p>
+                <p className="text-[9px] text-red-500 font-medium">
+                  * 주문 접수 후 1시간 이내로 입금 확인이 안 될 경우 주문 접수가 자동 취소됩니다.
                 </p>
               </div>
             </section>
@@ -499,6 +611,13 @@ export default function Home() {
 
       {/* Scent Info Modal */}
       <ScentInfoModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      
+      {/* Order Confirm Modal */}
+      <OrderConfirmModal 
+        isOpen={isOrderConfirmModalOpen} 
+        onClose={() => setIsOrderConfirmModalOpen(false)} 
+        orderDetails={orderDetails}
+      />
 
       {/* Styles */}
       <style jsx global>{`
